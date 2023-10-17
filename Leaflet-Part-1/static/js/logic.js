@@ -12,10 +12,10 @@ d3.json(response).then(function(data){
 
     function styleInfo(feature){
         return{
-            opacity: 1,
-            fillOpacity: 1,
-            fillColor: getColor(feature.properties.mag),
-            color: "#000000",
+            opacity: 0.5,
+            fillOpacity: 0.8,
+            fillColor: getColor(feature.geometry.coordinates[2]),
+            color: getColor(feature.geometry.coordinates[2]),
             radius: getRadius(feature.properties.mag),
             stroke: true,
             weight: 0.5
@@ -25,18 +25,29 @@ d3.json(response).then(function(data){
 
     function getColor(depth){
         switch(true){
+            case depth > 100:
+                return "#000000";
             case depth > 90:
-                return "#ea2c2c";
+                return "#8B0000";
+            case depth > 80:
+                return "#B22222";
             case depth > 70:
-                return "#ea822c";
+                return "#CD5C5C";
+            case depth > 60:
+                return "#DC143C";
             case depth > 50:
-                return "#ee9c00";
+                return "#FF4500";
+            case depth > 40:
+                return "#FF6347";
             case depth > 30:
-                return "#eecc00";
+                return "#FF7F50";
+            case depth > 20:
+                return "#FFA07A";
             case depth > 10:
-                return "#d4ee00";
+                return "#ADFF2F";
             default:
-                return "#98ee00";
+                return "#98FB98";
+                
         };
     };
 
@@ -47,7 +58,7 @@ d3.json(response).then(function(data){
         if (magnitude === 0){
             return 1;
         }
-        return magnitude * 4;
+        return magnitude * 6;
     };
 
 
@@ -70,23 +81,30 @@ d3.json(response).then(function(data){
 
     legend.onAdd = function(){
         let div = L.DomUtil.create("div", "info legend");
-        let grades = [-10, 10, 30, 50, 70, 90];
+
+        let grades = [-10, 10, 20, 30, 50, 70, 90];
         let colors = [
-            "#98ee00",
-            "#d4ee00",
-            "#eecc00",
-            "#ee9c00",
-            "#ea822c",
-            "#ea2c2c"
-          ];
+            "#98FB98",
+            "#ADFF2F",
+            "#FFA07A",
+            "#FF7F50",
+            "#FF4500",
+            "#CD5C5C",
+            "#8B0000"
+        ];
         
+
         for (var i = 0; i < grades.length; i++) {
             div.innerHTML +=
-              "<i style='background: " + colors[i] + "'></i> " +
-              grades[i] + (grades[i + 1] ? "&ndash;" + grades[i + 1] + "<br>" : "+");
-          }
-          return div;
+            "<i style='background: " + colors[i] + "'></i> " +
+            grades[i] + (grades[i + 1] ? "&ndash;" + grades[i + 1] + "<br>" : "+");
+        }
+        return div;
+
+
     };
+
+
 
     legend.addTo(map);
 
